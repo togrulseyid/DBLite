@@ -1,0 +1,5 @@
+# Testing
+
+``make``
+
+``make test``

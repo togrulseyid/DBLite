@@ -27,3 +27,19 @@
 *.exe
 *.out
 *.app
+
+# unnecessary folders including build folders
+# JetBrains IDE folder
+.idea/
+
+# Build
+build/
+
+# CMake
+cmake-build-debug/
+
+# Documentation Artifacts
+doc/html/*
+doc/latex/*
+doc/interface/*
+files/
