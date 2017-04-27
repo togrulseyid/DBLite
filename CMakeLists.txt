@@ -21,10 +21,12 @@ set(CMAKE_BUILD_TYPE DEBUG)
 set(SOURCE_FILES
         src/main.cpp
         src/operations.cpp
+        src/sort.cpp
+        ${version_file}
+        include/dblite.h
         include/operations.hpp
 #        include/plog/Log.h
-        ${version_file}
-        include/dblite.h)
+        include/sort.h)
 
 # Executable
 add_executable(DBLite ${SOURCE_FILES})
