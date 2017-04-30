@@ -1,6 +1,3 @@
-/** @file
-* Created by Toghrul on 27.04.17.
-*/
 #ifndef OPERATIONS_H
 #define OPERATIONS_H
 
@@ -57,7 +54,7 @@ public:
      *  std::string Name of file
      *  \endparblock
      */
-    int64_t getFileSize(std::string fileName);
+    uint64_t getFileSize(std::string fileName);
 
     /*!
      * \brief Write string data to file
