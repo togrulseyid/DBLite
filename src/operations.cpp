@@ -1,15 +1,12 @@
-/** @file
-* Created by Toghrul on 27.04.17.
-*/
 #include "operations.hpp"
 
 using namespace std;
 
-int64_t Operations::getFileSize(std::string fileName) {
+uint64_t Operations::getFileSize(std::string fileName) {
     std::ifstream mySource;
     mySource.open(fileName, ios_base::binary);
     mySource.seekg(0, ios_base::end);
-    int64_t size = mySource.tellg();
+    uint64_t size = mySource.tellg();
     mySource.close();
     return size;
 }
@@ -17,7 +14,7 @@ int64_t Operations::getFileSize(std::string fileName) {
 bool Operations::writeToFile(std::string fileName, std::ios_base::openmode base, std::string data) {
     std::ofstream file(fileName, base);
 
-    if(file.is_open()) {
+    if (file.is_open()) {
         file << data;
         file.close();
         return true;
@@ -31,8 +28,8 @@ std::string Operations::readFile(std::string fileName) {
     std::string txt;
     std::ifstream file(fileName);
 
-    if(file.is_open()) {
-        while(file.good()) {
+    if (file.is_open()) {
+        while (file.good()) {
             std::getline(file, txt);
         }
     }
