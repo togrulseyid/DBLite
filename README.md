@@ -4,7 +4,7 @@ Database Systems on Modern CPU Architectures
 
 Description
 -----------
-DBLite is going to be a simple, super lite, working, cool Database System that runs on Modern CPU Architectures.
+DBLite is going to be a simple Database System that runs on Modern CPU Architectures.
 
 
 Artifacts
