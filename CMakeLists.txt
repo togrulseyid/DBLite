@@ -11,27 +11,46 @@ include(version/version.cmake)
 include_directories("include/")
 
 # Flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall  -g -O1 -pthread ")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -march=native -std=c++11 -g -O3 -pthread")
 #set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_BUILD_TYPE DEBUG)
 
 # Source files
-set(SOURCE_FILES
-        src/main.cpp
+set(ESORT_FILES
+        test/esorttest.cpp
         src/operations.cpp
-        src/sort.cpp
+        src/e_sort/sort.cpp
         ${version_file}
         include/dblite.h
         include/operations.hpp
-#        include/plog/Log.h
-        include/sort.h)
+        #        include/plog/Log.h
+        include/e_sort/sort.h)
+
+
+# Source files
+set(BUFFER_FILES
+        test/buffertest.cpp
+        src/operations.cpp
+        ${version_file}
+        include/dblite.h
+        include/operations.hpp
+        src/buffer/buffermanager.cpp
+        include/buffer/buffermanager.h
+        src/buffer/bufferframe.cpp
+        include/buffer/bufferframe.h)
 
 # Executable
-add_executable(DBLite ${SOURCE_FILES})
+add_executable(DBLite_Esort ${ESORT_FILES})
 
-target_include_directories(DBLite PUBLIC include/)
+add_executable(DBLite_Buffer ${BUFFER_FILES})
+
+
+
+target_include_directories(DBLite_Esort PUBLIC include/)
+target_include_directories(DBLite_Buffer PUBLIC include/)
 
 # Test
 add_custom_target(stest
@@ -39,5 +58,6 @@ add_custom_target(stest
         )
 
 # doxygen build
-set(DOXYGEN_TARGETS DBLite)
+set(DOXYGEN_TARGETS DBLite_Esort)
+set(DOXYGEN_TARGETS DBLite_Buffer)
 include(doc/docs.cmake)

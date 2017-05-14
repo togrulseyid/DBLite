@@ -7,11 +7,6 @@ Description
 DBLite is going to be a simple Database System that runs on Modern CPU Architectures.
 
 
-Artifacts
----------
-* DBLite - the main service
-
-
 ## Development
 ### Setup repository
 ```
@@ -22,6 +17,12 @@ git clone git@github.com:togrulseyid/DBLite.git
 ```
 mkdir build && cd build && cmake .. && make
 ```
+
+Artifacts
+---------
+* DBLite - the main service
+* DBLite_Esort -  External sort
+* DBLite_Buffer - Buffer Manager
 
 ### C++ Programming Style Guidelines
 check C++ style guidelines ([Programming Style Guidelines](http://geosoft.no/development/cppstyle.html)) before starting to development 
