@@ -40,7 +40,7 @@ set(BUFFER_FILES
         src/buffer/buffermanager.cpp
         include/buffer/buffermanager.h
         src/buffer/bufferframe.cpp
-        include/buffer/bufferframe.h)
+        include/buffer/bufferframe.h src/slottedpages/spsegment.cpp include/slottedpages/spsegment.h src/slottedpages/slottedpages.cpp include/slottedpages/slottedpages.h include/slottedpages/Record.h src/slottedpages/Record.cpp include/slottedpages/tid.h)
 
 # Executable
 add_executable(DBLite_Esort ${ESORT_FILES})
