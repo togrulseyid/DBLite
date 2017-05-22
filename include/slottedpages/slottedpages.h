@@ -37,13 +37,15 @@ public:
 
     uint16_t store(uint32_t len, const char *data);
 
-    uint16_t store(uint32_t len, const char *data, uint32_t slot_id);
+    void store(uint32_t len, const char *data, uint16_t slot_id);
 
-    bool isFree(uint16_t len);
+    bool isFree(int len);
 
     void redirect(uint16_t slot_id, TID redirect_tid);
 
     uint16_t get_length(uint16_t slot_id);
+
+    uint16_t getOffset(uint16_t slot_id);
 
     char* getData(uint16_t slot_id);
 

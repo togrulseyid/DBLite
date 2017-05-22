@@ -13,7 +13,7 @@
 
 class SPSegment {
 private:
-    BufferManager bm = NULL;
+    BufferManager& bm;
     uint32_t size;
 public:
     TID insert(const Record &r);

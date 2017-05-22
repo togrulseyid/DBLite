@@ -7,6 +7,7 @@
 #include <slottedpages/spsegment.h>
 #include <slottedpages/slottedpages.h>
 #include <cstring>
+#include <iostream>
 
 TID SPSegment::insert(const Record &r) {
     auto recordData = r.getData();
@@ -17,10 +18,10 @@ TID SPSegment::insert(const Record &r) {
         SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
 
         if (page->isFree(recordSize)) {
-            uint16_t slotId = page->store(recordSize, recordData);
+            uint32_t slotId = page->store(recordSize, recordData);
             bm.unfixPage(frame, true);
-            //TID tid(i, slotId);
-            return TID(i, slotId);
+            TID tid = {(uint64_t)i, slotId};
+            return tid;
         } else {
             bm.unfixPage(frame, false);
         }
@@ -33,13 +34,13 @@ TID SPSegment::insert(const Record &r) {
     SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
     uint16_t slotId = page->store(recordSize, recordData);
     bm.unfixPage(frame, true);
-    //TID tid(pageId, slotId);
-    return TID(pageId, slotId);;
+    TID tid = {pageId, slotId};
+    return tid;
 }
 
 bool SPSegment::remove(TID tid) {
-    uint64_t page_id = tid.getPageId();
-    uint32_t slot_id = tid.getSlotId();
+    uint64_t page_id = tid.page_id;
+    uint16_t slot_id = tid.slot_id;
     BufferFrame &frame = bm.fixPage(page_id, true);
     SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
     page->remove(slot_id);
@@ -48,18 +49,17 @@ bool SPSegment::remove(TID tid) {
 }
 
 Record SPSegment::lookup(TID tid) {
-    uint64_t page_id = tid.getPageId();
-    uint32_t slot_id = tid.getSlotId();
-
+    uint64_t page_id = tid.page_id;
+    uint16_t slot_id = tid.slot_id;
     BufferFrame &frame = bm.fixPage(page_id, false);
     SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
 
-    if (page->get_length(slot_id) == 0 && true) { // redirected
+    if (page->get_length(slot_id) == 0 &&  true) { // redirected
         TID *redirected_tid = reinterpret_cast<TID *>(page->getData(slot_id));
-        BufferFrame &redirected_frame = bm.fixPage(page_id, false);
-        SlottedPage *redirected_page = static_cast<SlottedPage *>(frame.getData());
-        Record record(redirected_page->get_length(redirected_tid->getSlotId()),
-                      redirected_page->getData(redirected_tid->getSlotId()));
+        BufferFrame &redirected_frame = bm.fixPage(redirected_tid->page_id, false);
+        SlottedPage *redirected_page = static_cast<SlottedPage *>(redirected_frame.getData());
+        Record record(redirected_page->get_length(redirected_tid->slot_id),
+                      redirected_page->getData(redirected_tid->slot_id));
         bm.unfixPage(frame, false);
         bm.unfixPage(redirected_frame, false);
         return record;
@@ -71,8 +71,8 @@ Record SPSegment::lookup(TID tid) {
 }
 
 bool SPSegment::update(TID tid, const Record &r) {
-    uint64_t page_id = tid.getPageId();
-    uint32_t slot_id = tid.getSlotId();
+    uint64_t page_id = tid.page_id;
+    uint16_t slot_id = tid.slot_id;
     auto recordSize = r.getLen();
 
     BufferFrame &frame = bm.fixPage(page_id, true);
@@ -83,14 +83,15 @@ bool SPSegment::update(TID tid, const Record &r) {
         bm.unfixPage(frame, true);
         return true;
     }
-
+    bm.unfixPage(frame, false);
     TID redirect_tid = insert(r);
+    frame = bm.fixPage(page_id, true);
+    page = static_cast<SlottedPage *>(frame.getData());
     page->redirect(slot_id, redirect_tid);
     bm.unfixPage(frame, true);
     return true;
 }
 
-SPSegment::SPSegment(uint16_t segment_id, BufferManager &buffer_manager) {
-    bm = buffer_manager;
+SPSegment::SPSegment(uint16_t segment_id, BufferManager &buffer_manager): bm(buffer_manager) {
     size = 0;
 }
