@@ -25,7 +25,7 @@ char *SlottedPage::getData(uint16_t slot_id) {
 }
 
 bool SlottedPage::isFree(uint16_t len) {
-    len = std::max(len, sizeof(TID));
+    len = std::max(len, (uint16_t)sizeof(TID));
     uint32_t right = header.dataStart;
     uint32_t left = sizeof(Slot) * (header.slotCount + 1);
     return ((right - left) >= len);

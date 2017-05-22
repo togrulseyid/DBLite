@@ -9,8 +9,6 @@
 #include <buffer/bufferframe.h>
 #include "tid.h"
 
-const uint16_t HEADER_SIZE = sizeof(SlottedPageHeader);
-const uint16_t DATA_SIZE = FRAME_SIZE - HEADER_SIZE;
 
 struct SlottedPageHeader {
     uint16_t slotCount;
@@ -22,11 +20,16 @@ struct Slot {
     uint16_t length;
 };
 
+const uint16_t HEADER_SIZE = sizeof(SlottedPageHeader);
+const uint16_t DATA_SIZE = FRAME_SIZE - HEADER_SIZE;
+const uint16_t SLOT_SIZE = sizeof(Slot);
+
+
 class SlottedPage {
 private:
     SlottedPageHeader header;
     union {
-        Slot slot[DATA_SIZE / sizeof(Slot)];
+        Slot slot[DATA_SIZE / SLOT_SIZE];
         char data[DATA_SIZE];
     };
 public:

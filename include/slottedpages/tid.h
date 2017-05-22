@@ -12,7 +12,7 @@ private:
     uint64_t page_id;
     uint16_t slot_id;
 public:
-    TID(uint64_t page_id, uint16_t slot_id) : (this->page_id, this->slot_id);
+    TID(uint64_t page_id, uint16_t slot_id);
 
     uint64_t getPageId() { return page_id; };
 
