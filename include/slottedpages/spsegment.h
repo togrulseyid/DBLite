@@ -11,16 +11,20 @@
 #include "tid.h"
 
 
-class SPSegment{
+class SPSegment {
 private:
     BufferManager bm = NULL;
     uint32_t size;
 public:
-    TID insert(const Record& r);
+    TID insert(const Record &r);
+
     bool remove(TID tid);
+
     Record lookup(TID tid);
-    bool update(TID tid, const Record& r);
-    SPSegment(uint16_t segment_id, BufferManager& buffer_manager);
+
+    bool update(TID tid, const Record &r);
+
+    SPSegment(uint16_t segment_id, BufferManager &buffer_manager);
 };
 
 #endif //DBLITE_SPSEGMENT_H

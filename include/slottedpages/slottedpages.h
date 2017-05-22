@@ -7,6 +7,7 @@
 
 #include <stdint-gcc.h>
 #include <buffer/bufferframe.h>
+#include "tid.h"
 
 const uint16_t HEADER_SIZE = sizeof(SlottedPageHeader);
 const uint16_t DATA_SIZE = FRAME_SIZE - HEADER_SIZE;
@@ -16,27 +17,35 @@ struct SlottedPageHeader {
     uint16_t dataStart;
 };
 
-struct Slot{
+struct Slot {
     uint16_t offset;
     uint16_t length;
 };
 
-class SlottedPage{
+class SlottedPage {
 private:
     SlottedPageHeader header;
-    union{
-        Slot slot[DATA_SIZE/sizeof(Slot)];
+    union {
+        Slot slot[DATA_SIZE / sizeof(Slot)];
         char data[DATA_SIZE];
     };
 public:
     void remove(uint16_t slot_id);
-    uint16_t store(uint32_t len, const char* data);
-    uint16_t store(uint32_t len, const char* data, uint32_t slot_id);
 
-    uint16_t isFree(uint16_t len);
+    uint16_t store(uint32_t len, const char *data);
+
+    uint16_t store(uint32_t len, const char *data, uint32_t slot_id);
+
+    bool isFree(uint16_t len);
+
+    void redirect(uint16_t slot_id, TID redirect_tid);
+
+    uint16_t get_length(uint16_t slot_id);
+
+    char* getData(uint16_t slot_id);
+
     SlottedPage();
 };
-
 
 
 #endif //DBLITE_SLOTTEDPAGES_H
