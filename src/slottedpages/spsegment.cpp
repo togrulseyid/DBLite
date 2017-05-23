@@ -13,19 +13,6 @@ TID SPSegment::insert(const Record &r) {
     auto record_data = r.getData();
     auto record_size = r.getLen();
 
-    /*for (int i = 0; i < size; ++i) {
-        BufferFrame &frame = bm.fixPage(i, true);
-        SlottedPage *page = static_cast<SlottedPage *>(frame.get_data());
-
-        if (page->is_free(record_size)) {
-            uint32_t slotId = page->store(record_size, record_data);
-            bm.unfixPage(frame, true);
-            TID tid = {(uint64_t)i, slotId};
-            return tid;
-        } else {
-            bm.unfixPage(frame, false);
-        }
-    } */
     if(!free_space_inventory.empty()){
         std::pair<uint16_t, uint64_t> temp = free_space_inventory.top();
         if(temp.first >= record_size + SLOT_SIZE){
@@ -98,10 +85,7 @@ bool SPSegment::update(TID tid, const Record &r) {
         bm.unfixPage(frame, true);
         return true;
     }
-    bm.unfixPage(frame, false);
     TID redirect_tid = insert(r);
-    frame = bm.fixPage(page_id, true);
-    page = static_cast<SlottedPage *>(frame.getData());
     page->redirect(slot_id, redirect_tid);
     bm.unfixPage(frame, true);
     return true;
