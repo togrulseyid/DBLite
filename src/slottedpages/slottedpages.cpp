@@ -21,15 +21,15 @@ uint16_t SlottedPage::get_length(uint16_t slot_id) {
     return slot[slot_id].length;
 }
 
-char *SlottedPage::getData(uint16_t slot_id) {
+char *SlottedPage::get_data(uint16_t slot_id) {
     return data + slot[slot_id].offset;
 }
 
-uint16_t SlottedPage::getOffset(uint16_t slot_id){
+uint16_t SlottedPage::get_offset(uint16_t slot_id){
     return slot[slot_id].offset;
 }
 
-bool SlottedPage::isFree(int len) {
+bool SlottedPage::is_free(int len) {
     len = std::max(len, (int) sizeof(TID));
     len += SLOT_SIZE;
     int right = header.dataStart;

@@ -10,15 +10,15 @@
 #include <iostream>
 
 TID SPSegment::insert(const Record &r) {
-    auto recordData = r.getData();
-    auto recordSize = r.getLen();
+    auto record_data = r.getData();
+    auto record_size = r.getLen();
 
     /*for (int i = 0; i < size; ++i) {
         BufferFrame &frame = bm.fixPage(i, true);
-        SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
+        SlottedPage *page = static_cast<SlottedPage *>(frame.get_data());
 
-        if (page->isFree(recordSize)) {
-            uint32_t slotId = page->store(recordSize, recordData);
+        if (page->is_free(record_size)) {
+            uint32_t slotId = page->store(record_size, record_data);
             bm.unfixPage(frame, true);
             TID tid = {(uint64_t)i, slotId};
             return tid;
@@ -26,14 +26,14 @@ TID SPSegment::insert(const Record &r) {
             bm.unfixPage(frame, false);
         }
     } */
-    if(!freeSpaceInventory.empty()){
-        std::pair<uint16_t, uint64_t> temp = freeSpaceInventory.top();
-        if(temp.first >= recordSize + SLOT_SIZE){
-            freeSpaceInventory.pop();
-            freeSpaceInventory.push(std::make_pair(temp.first - SLOT_SIZE - recordSize, temp.second));
+    if(!free_space_inventory.empty()){
+        std::pair<uint16_t, uint64_t> temp = free_space_inventory.top();
+        if(temp.first >= record_size + SLOT_SIZE){
+            free_space_inventory.pop();
+            free_space_inventory.push(std::make_pair(temp.first - SLOT_SIZE - record_size, temp.second));
             BufferFrame &frame = bm.fixPage(temp.second, true);
             SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
-            uint32_t slotId = page->store(recordSize, recordData);
+            uint32_t slotId = page->store(record_size, record_data);
             bm.unfixPage(frame, true);
             TID tid = {(uint64_t)temp.second, slotId};
             return tid;
@@ -46,8 +46,8 @@ TID SPSegment::insert(const Record &r) {
     auto data = frame.getData();
     memcpy(data, new SlottedPage(), FRAME_SIZE);
     SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
-    uint16_t slotId = page->store(recordSize, recordData);
-    freeSpaceInventory.push(std::make_pair(DATA_SIZE - SLOT_SIZE - recordSize, pageId));
+    uint16_t slotId = page->store(record_size, record_data);
+    free_space_inventory.push(std::make_pair(DATA_SIZE - SLOT_SIZE - record_size, pageId));
     bm.unfixPage(frame, true);
     TID tid = {pageId, slotId};
     return tid;
@@ -69,17 +69,17 @@ Record SPSegment::lookup(TID tid) {
     BufferFrame &frame = bm.fixPage(page_id, false);
     SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
 
-    if (page->get_length(slot_id) == 0 &&  page->getOffset(slot_id) != 0) { // redirected
-        TID *redirected_tid = reinterpret_cast<TID *>(page->getData(slot_id));
+    if (page->get_length(slot_id) == 0 && page->get_offset(slot_id) != 0) { // redirected
+        TID *redirected_tid = reinterpret_cast<TID *>(page->get_data(slot_id));
         BufferFrame &redirected_frame = bm.fixPage(redirected_tid->page_id, false);
         SlottedPage *redirected_page = static_cast<SlottedPage *>(redirected_frame.getData());
         Record record(redirected_page->get_length(redirected_tid->slot_id),
-                      redirected_page->getData(redirected_tid->slot_id));
+                      redirected_page->get_data(redirected_tid->slot_id));
         bm.unfixPage(frame, false);
         bm.unfixPage(redirected_frame, false);
         return record;
     } else {
-        Record record(page->get_length(slot_id), page->getData(slot_id));
+        Record record(page->get_length(slot_id), page->get_data(slot_id));
         bm.unfixPage(frame, false);
         return record;
     }
@@ -93,7 +93,7 @@ bool SPSegment::update(TID tid, const Record &r) {
     BufferFrame &frame = bm.fixPage(page_id, true);
     SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
 
-    if (page->isFree(recordSize)) {
+    if (page->is_free(recordSize)) {
         page->store(recordSize, r.getData(), slot_id);
         bm.unfixPage(frame, true);
         return true;

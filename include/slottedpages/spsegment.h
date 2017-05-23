@@ -16,7 +16,7 @@ class SPSegment {
 private:
     BufferManager& bm;
     uint32_t size;
-    std::priority_queue<std::pair<uint16_t, uint64_t > > freeSpaceInventory;
+    std::priority_queue<std::pair<uint16_t, uint64_t > > free_space_inventory;
 public:
     TID insert(const Record &r);
 
