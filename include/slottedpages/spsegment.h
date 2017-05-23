@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <buffer/buffermanager.h>
 #include <slottedpages/Record.h>
+#include <queue>
 #include "tid.h"
 
 
@@ -15,6 +16,7 @@ class SPSegment {
 private:
     BufferManager& bm;
     uint32_t size;
+    std::priority_queue<std::pair<uint16_t, uint64_t > > freeSpaceInventory;
 public:
     TID insert(const Record &r);
 

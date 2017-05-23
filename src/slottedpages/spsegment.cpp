@@ -13,7 +13,7 @@ TID SPSegment::insert(const Record &r) {
     auto recordData = r.getData();
     auto recordSize = r.getLen();
 
-    for (int i = 0; i < size; ++i) {
+    /*for (int i = 0; i < size; ++i) {
         BufferFrame &frame = bm.fixPage(i, true);
         SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
 
@@ -25,7 +25,21 @@ TID SPSegment::insert(const Record &r) {
         } else {
             bm.unfixPage(frame, false);
         }
+    } */
+    if(!freeSpaceInventory.empty()){
+        std::pair<uint16_t, uint64_t> temp = freeSpaceInventory.top();
+        if(temp.first >= recordSize + SLOT_SIZE){
+            freeSpaceInventory.pop();
+            freeSpaceInventory.push(std::make_pair(temp.first - SLOT_SIZE - recordSize, temp.second));
+            BufferFrame &frame = bm.fixPage(temp.second, true);
+            SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
+            uint32_t slotId = page->store(recordSize, recordData);
+            bm.unfixPage(frame, true);
+            TID tid = {(uint64_t)temp.second, slotId};
+            return tid;
+        }
     }
+
     uint16_t pageId = size;
     BufferFrame &frame = bm.fixPage(pageId, true);
     ++size;
@@ -33,6 +47,7 @@ TID SPSegment::insert(const Record &r) {
     memcpy(data, new SlottedPage(), FRAME_SIZE);
     SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
     uint16_t slotId = page->store(recordSize, recordData);
+    freeSpaceInventory.push(std::make_pair(DATA_SIZE - SLOT_SIZE - recordSize, pageId));
     bm.unfixPage(frame, true);
     TID tid = {pageId, slotId};
     return tid;
