@@ -69,7 +69,7 @@ Record SPSegment::lookup(TID tid) {
     BufferFrame &frame = bm.fixPage(page_id, false);
     SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
 
-    if (page->get_length(slot_id) == 0 &&  true) { // redirected
+    if (page->get_length(slot_id) == 0 &&  page->getOffset(slot_id) != 0) { // redirected
         TID *redirected_tid = reinterpret_cast<TID *>(page->getData(slot_id));
         BufferFrame &redirected_frame = bm.fixPage(redirected_tid->page_id, false);
         SlottedPage *redirected_page = static_cast<SlottedPage *>(redirected_frame.getData());
