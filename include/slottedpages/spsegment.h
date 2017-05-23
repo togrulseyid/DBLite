@@ -7,7 +7,7 @@
 
 #include <cstdint>
 #include <buffer/buffermanager.h>
-#include <slottedpages/Record.h>
+#include <slottedpages/schema/Record.h>
 #include <queue>
 #include "tid.h"
 

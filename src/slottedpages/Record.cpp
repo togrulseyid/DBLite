@@ -2,7 +2,7 @@
 // Created by mahammad on 5/21/17.
 //
 
-#include <slottedpages/Record.h>
+#include <slottedpages/schema/Record.h>
 #include <cstdlib>
 #include <cstring>
 

@@ -2,7 +2,7 @@
 #include <vector>
 #include <cassert>
 #include <string.h>
-#include <slottedpages/Record.h>
+#include <slottedpages/schema/Record.h>
 #include <slottedpages/tid.h>
 #include <buffer/buffermanager.h>
 #include <slottedpages/spsegment.h>

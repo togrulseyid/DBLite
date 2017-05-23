@@ -2,7 +2,7 @@
 // Created by mahammad on 5/21/17.
 //
 
-#include <slottedpages/Record.h>
+#include <slottedpages/schema/Record.h>
 #include <slottedpages/tid.h>
 #include <slottedpages/spsegment.h>
 #include <slottedpages/slottedpages.h>
@@ -26,7 +26,6 @@ TID SPSegment::insert(const Record &r) {
             return tid;
         }
     }
-
     uint16_t pageId = size;
     BufferFrame &frame = bm.fixPage(pageId, true);
     ++size;
