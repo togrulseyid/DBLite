@@ -19,7 +19,7 @@ void ExternalSort::externalSort(int fdInput, uint64_t size, int fdOutput, uint64
 
     uint64_t remaining = numCount * (k - 1);
     sizeFiles[k - 1] = size - remaining;
-
+ 
     // Here I separate the input file to a few pieces and each piece contains RAM size 64 bit unsigned integer
     // for each set of numbers(k sets) I sort and create a new file for each, labeled from 1 to k
 
