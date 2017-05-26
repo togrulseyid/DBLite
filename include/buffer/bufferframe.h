@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <sys/param.h>
 
-const int frame_size = 16 * 1024;
+const int FRAME_SIZE = 16 * 1024;
 
 class BufferFrame {
 public:

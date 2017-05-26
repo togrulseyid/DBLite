@@ -14,13 +14,13 @@ BufferFrame::BufferFrame(int fd, uint64_t pageId) {
     this->threads_cnt = 1; // newly created, the number of threads working on it should be 1
     this->pageId = pageId;
     this->fd = fd;
-    this->offset = ((pageId % page_idx)) * frame_size;
+    this->offset = ((pageId % page_idx)) * FRAME_SIZE;
     this->readData();
 }
 
 void BufferFrame::readData() {
-    data = new uint8_t[frame_size];
-    int res = pread(fd, data, frame_size, offset);
+    data = new uint8_t[FRAME_SIZE];
+    int res = pread(fd, data, FRAME_SIZE, offset);
     if (res < 0)
         std::cerr << "file can't be read" << std::endl;
 }
@@ -35,7 +35,7 @@ uint64_t BufferFrame::getPageId() {
 
 void BufferFrame::writeBackToDisk() {
     if (is_dirty) {
-        int res = pwrite(fd, data, frame_size, offset);
+        int res = pwrite(fd, data, FRAME_SIZE, offset);
         if (res < 0)
             std::cerr << "data can't be written to disk" << std::endl;
         is_dirty = false;

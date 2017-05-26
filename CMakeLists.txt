@@ -40,17 +40,35 @@ set(BUFFER_FILES
         src/buffer/buffermanager.cpp
         include/buffer/buffermanager.h
         src/buffer/bufferframe.cpp
-        include/buffer/bufferframe.h)
+        include/buffer/bufferframe.h src/slottedpages/spsegment.cpp include/slottedpages/spsegment.h src/slottedpages/slottedpages.cpp include/slottedpages/slottedpages.h include/slottedpages/schema/Record.h src/slottedpages/Record.cpp include/slottedpages/tid.h)
+
+# Source files
+set(SLOTTED_PAGE_FILES
+        test/slottedTest.cpp
+        src/operations.cpp
+        ${version_file}
+        include/dblite.h
+        include/operations.hpp
+        src/buffer/buffermanager.cpp
+        include/buffer/buffermanager.h
+        src/buffer/bufferframe.cpp
+        include/buffer/bufferframe.h src/slottedpages/spsegment.cpp include/slottedpages/spsegment.h src/slottedpages/slottedpages.cpp include/slottedpages/slottedpages.h include/slottedpages/schema/Record.h src/slottedpages/Record.cpp include/slottedpages/tid.h)
+
 
 # Executable
 add_executable(DBLite_Esort ${ESORT_FILES})
 
 add_executable(DBLite_Buffer ${BUFFER_FILES})
 
+add_executable(DBLite_SPSegment ${SLOTTED_PAGE_FILES})
+
+
 
 
 target_include_directories(DBLite_Esort PUBLIC include/)
 target_include_directories(DBLite_Buffer PUBLIC include/)
+target_include_directories(DBLite_SPSegment PUBLIC include/)
+
 
 # Test
 add_custom_target(stest
@@ -60,4 +78,6 @@ add_custom_target(stest
 # doxygen build
 set(DOXYGEN_TARGETS DBLite_Esort)
 set(DOXYGEN_TARGETS DBLite_Buffer)
+set(DOXYGEN_TARGETS DBLite_SPSegment)
+
 include(doc/docs.cmake)
