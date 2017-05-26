@@ -9,31 +9,36 @@
 #include <cstring>
 #include <iostream>
 
+SPSegment::SPSegment(uint16_t segment_id, BufferManager &buffer_manager) : bm(buffer_manager) {
+    size = 0;
+}
+
 TID SPSegment::insert(const Record &r) {
     auto record_data = r.getData();
     auto record_size = r.getLen();
 
-    if(!free_space_inventory.empty()){
-        std::pair<uint16_t, uint64_t> temp = free_space_inventory.top();
-        if(temp.first >= record_size + SLOT_SIZE){
+    if (!free_space_inventory.empty()) { // check if it not empty
+        std::pair<uint16_t, uint64_t> temp = free_space_inventory.top(); // getting the page which is used previously and contains largest empty space
+        if (temp.first >= record_size + SLOT_SIZE) { // check whether it has enough place to reside it
             free_space_inventory.pop();
             free_space_inventory.push(std::make_pair(temp.first - SLOT_SIZE - record_size, temp.second));
-            BufferFrame &frame = bm.fixPage(temp.second, true);
+            BufferFrame &frame = bm.fixPage(temp.second, true); // fixing the page
             SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
-            uint32_t slotId = page->store(record_size, record_data);
+            uint32_t slotId = page->store(record_size, record_data); // storing
             bm.unfixPage(frame, true);
-            TID tid = {(uint64_t)temp.second, slotId};
+            TID tid = {(uint64_t) temp.second, slotId};
             return tid;
         }
     }
-    uint16_t pageId = size;
+    // if it can't fit the page with largest empty place
+    uint16_t pageId = size; // taking new page with the smallest id
     BufferFrame &frame = bm.fixPage(pageId, true);
     ++size;
     auto data = frame.getData();
     memcpy(data, new SlottedPage(), FRAME_SIZE);
     SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
     uint16_t slotId = page->store(record_size, record_data);
-    free_space_inventory.push(std::make_pair(DATA_SIZE - SLOT_SIZE - record_size, pageId));
+    free_space_inventory.push(std::make_pair(DATA_SIZE - SLOT_SIZE - record_size, pageId)); // adding it to the free space inventory to use that page for the further records
     bm.unfixPage(frame, true);
     TID tid = {pageId, slotId};
     return tid;
@@ -44,7 +49,7 @@ bool SPSegment::remove(TID tid) {
     uint16_t slot_id = tid.slot_id;
     BufferFrame &frame = bm.fixPage(page_id, true);
     SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
-    page->remove(slot_id);
+    page->remove(slot_id); // removing the record
     bm.unfixPage(frame, true);
     return true;
 }
@@ -55,7 +60,7 @@ Record SPSegment::lookup(TID tid) {
     BufferFrame &frame = bm.fixPage(page_id, false);
     SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
 
-    if (page->get_length(slot_id) == 0 && page->get_offset(slot_id) != 0) { // redirected
+    if (page->get_length(slot_id) == 0 && page->get_offset(slot_id) != 0) { // redirected with TID
         TID *redirected_tid = reinterpret_cast<TID *>(page->get_data(slot_id));
         BufferFrame &redirected_frame = bm.fixPage(redirected_tid->page_id, false);
         SlottedPage *redirected_page = static_cast<SlottedPage *>(redirected_frame.getData());
@@ -64,7 +69,7 @@ Record SPSegment::lookup(TID tid) {
         bm.unfixPage(frame, false);
         bm.unfixPage(redirected_frame, false);
         return record;
-    } else {
+    } else { // it is not redirected, just fetch it
         Record record(page->get_length(slot_id), page->get_data(slot_id));
         bm.unfixPage(frame, false);
         return record;
@@ -79,17 +84,13 @@ bool SPSegment::update(TID tid, const Record &r) {
     BufferFrame &frame = bm.fixPage(page_id, true);
     SlottedPage *page = static_cast<SlottedPage *>(frame.getData());
 
-    if (page->is_free(recordSize)) {
+    if (page->is_free(recordSize)) { // there is enough place on the page where the old record resided
         page->store(recordSize, r.getData(), slot_id);
         bm.unfixPage(frame, true);
         return true;
     }
-    TID redirect_tid = insert(r);
-    page->redirect(slot_id, redirect_tid);
+    TID redirect_tid = insert(r); // we insert the record to a different page
+    page->redirect(slot_id, redirect_tid); // redirect to that page
     bm.unfixPage(frame, true);
     return true;
-}
-
-SPSegment::SPSegment(uint16_t segment_id, BufferManager &buffer_manager): bm(buffer_manager) {
-    size = 0;
 }

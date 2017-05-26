@@ -17,7 +17,7 @@ Record::Record(unsigned len, const char *const ptr) : len(len) {
         memcpy(data, ptr, len);
 }
 
-const char *Record::getData() const {
+const char *Record::getData() const { //
     return data;
 }
 
