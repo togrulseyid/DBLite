@@ -8,10 +8,9 @@
 #include <slottedpages/slottedpages.h>
 #include <cstring>
 #include <iostream>
+#include <slottedpages/segment.h>
 
-SPSegment::SPSegment(uint16_t segment_id, BufferManager &buffer_manager) : bm(buffer_manager) {
-    size = 0;
-}
+SPSegment::SPSegment(uint16_t segment_id, BufferManager &bm) : Segment(segment_id, bm) {}
 
 TID SPSegment::insert(const Record &r) {
     auto record_data = r.getData();

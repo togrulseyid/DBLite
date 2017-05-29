@@ -10,12 +10,11 @@
 #include <slottedpages/schema/Record.h>
 #include <queue>
 #include "tid.h"
+#include "segment.h"
 
 
-class SPSegment {
+class SPSegment : Segment{
 private:
-    BufferManager& bm;
-    uint32_t size;
     std::priority_queue<std::pair<uint16_t, uint64_t > > free_space_inventory; // to quickly find the page with enough space
 public:
     TID insert(const Record &r); // insert a new record

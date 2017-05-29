@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
 
    Parser p(argv[1]);
    try {
-      std::unique_ptr<Schema> schema = p.parse();
+      Schema* schema = p.parse();
       std::cout << schema->toString() << std::endl;
    } catch (ParserError& e) {
       std::cerr << e.what() << std::endl;

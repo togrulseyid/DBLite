@@ -24,10 +24,10 @@ namespace literal {
    const char Semicolon = ';';
 }
 
-std::unique_ptr<Schema> Parser::parse() {
+Schema* Parser::parse() {
    std::string token;
    unsigned line=1;
-   std::unique_ptr<Schema> s(new Schema());
+   Schema* s(new Schema());
    in.open(fileName.c_str());
    if (!in.is_open())
       throw ParserError(line, "cannot open file '"+fileName+"'");
@@ -45,7 +45,7 @@ std::unique_ptr<Schema> Parser::parse() {
          ++line;
    }
    in.close();
-   return std::move(s);
+   return s;
 }
 
 static bool isIdentifier(const std::string& str) {
