@@ -16,14 +16,14 @@ SchemaSegment::SchemaSegment(uint16_t segment_id, BufferManager &bm, Schema* sch
     write_disk();
 }
 
-void SchemaSegment::write_disk() {
+void SchemaSegment::write_disk() { // writing the schema to the BufferManager/disk as dirty
     BufferFrame& bf = bm.fixPage(0, true);
     char* data = static_cast<char*>(bf.getData());
     memcpy(data, schema, FRAME_SIZE);
     bm.unfixPage(bf, true);
 }
 
-void SchemaSegment::load_memory() {
+void SchemaSegment::load_memory() { // loading the schema from the BufferManager/disk
     BufferFrame& bf = bm.fixPage(0, true);
     char* bf_data = static_cast<char*>(bf.getData());
     schema = (reinterpret_cast<Schema*>(bf_data));
