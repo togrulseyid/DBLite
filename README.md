@@ -23,6 +23,9 @@ Artifacts
 * DBLite - the main service
 * DBLite_Esort -  External sort
 * DBLite_Buffer - Buffer Manager
+* DBLite_SPSegment - Slottet Page
+* DBLite_SCHEMA - Schema(args: test.sql file)
+
 
 ### C++ Programming Style Guidelines
 check C++ style guidelines ([Programming Style Guidelines](http://geosoft.no/development/cppstyle.html)) before starting to development 
