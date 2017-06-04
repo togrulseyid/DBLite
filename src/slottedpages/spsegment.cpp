@@ -88,7 +88,15 @@ bool SPSegment::update(TID tid, const Record &r) {
         bm.unfixPage(frame, true);
         return true;
     }
+    if(page->get_length(slot_id) == 0){
+        TID *old_redirected_tid = reinterpret_cast<TID *>(page->get_data(slot_id));
+        BufferFrame &old_redirected_frame = bm.fixPage(old_redirected_tid->page_id, true);
+        SlottedPage *old_redirected_page = static_cast<SlottedPage *>(old_redirected_frame.getData());
+        old_redirected_page->remove(old_redirected_tid->slot_id);
+        bm.unfixPage(old_redirected_frame, true);
+    }
     TID redirect_tid = insert(r); // we insert the record to a different page
+
     page->redirect(slot_id, redirect_tid); // redirect to that page
     bm.unfixPage(frame, true);
     return true;
