@@ -12,7 +12,7 @@ include_directories("include/")
 
 # Flags
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall  -g -O1 -pthread ")
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -march=native -std=c++11 -g -O3 -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -march=native -std=c++11 -g -O3 -pthread")
 #set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -40,11 +40,11 @@ set(BUFFER_FILES
         src/buffer/buffermanager.cpp
         include/buffer/buffermanager.h
         src/buffer/bufferframe.cpp
-        include/buffer/bufferframe.h src/slottedpages/spsegment.cpp include/slottedpages/spsegment.h src/slottedpages/slottedpages.cpp include/slottedpages/slottedpages.h include/slottedpages/schema/Record.h src/slottedpages/Record.cpp include/slottedpages/tid.h include/slottedpages/schemasegment.h include/slottedpages/segment.h src/slottedpages/schemasegment.cpp src/slottedpages/segment.cpp)
+        include/buffer/bufferframe.h)
 
 # Source files
 set(SLOTTED_PAGE_FILES
-        test/slottedTest.cpp
+        test/slottedtest.cpp
         src/operations.cpp
         ${version_file}
         include/dblite.h
@@ -52,7 +52,18 @@ set(SLOTTED_PAGE_FILES
         src/buffer/buffermanager.cpp
         include/buffer/buffermanager.h
         src/buffer/bufferframe.cpp
-        include/buffer/bufferframe.h src/slottedpages/spsegment.cpp include/slottedpages/spsegment.h src/slottedpages/slottedpages.cpp include/slottedpages/slottedpages.h include/slottedpages/schema/Record.h src/slottedpages/Record.cpp include/slottedpages/tid.h include/slottedpages/segment.h include/slottedpages/schemasegment.h src/slottedpages/segment.cpp src/slottedpages/schemasegment.cpp)
+        include/buffer/bufferframe.h
+        src/slottedpages/spsegment.cpp
+        include/slottedpages/spsegment.h
+        src/slottedpages/slottedpages.cpp
+        include/slottedpages/slottedpages.h
+        include/slottedpages/schema/Record.h
+        src/slottedpages/Record.cpp
+        include/slottedpages/tid.h
+        include/slottedpages/segment.h
+        include/slottedpages/schemasegment.h
+        src/slottedpages/segment.cpp
+        src/slottedpages/schemasegment.cpp)
 
 set(SCHEMA_FILES
         test/schematest.cpp
@@ -63,7 +74,49 @@ set(SCHEMA_FILES
         src/buffer/buffermanager.cpp
         include/buffer/buffermanager.h
         src/buffer/bufferframe.cpp
-        include/buffer/bufferframe.h src/slottedpages/spsegment.cpp include/slottedpages/spsegment.h src/slottedpages/slottedpages.cpp include/slottedpages/slottedpages.h include/slottedpages/schema/Record.h src/slottedpages/Record.cpp include/slottedpages/tid.h include/slottedpages/segment.h include/slottedpages/schemasegment.h src/slottedpages/segment.cpp src/slottedpages/schemasegment.cpp include/slottedpages/schema/Parser.cpp include/slottedpages/schema/Parser.hpp include/slottedpages/schema/Schema.hpp include/slottedpages/schema/Schema.cpp)
+        include/buffer/bufferframe.h
+        src/slottedpages/spsegment.cpp
+        include/slottedpages/spsegment.h
+        src/slottedpages/slottedpages.cpp
+        include/slottedpages/slottedpages.h
+        include/slottedpages/schema/Record.h
+        src/slottedpages/Record.cpp
+        include/slottedpages/tid.h
+        include/slottedpages/segment.h
+        include/slottedpages/schemasegment.h
+        src/slottedpages/segment.cpp
+        src/slottedpages/schemasegment.cpp
+        include/slottedpages/schema/Parser.cpp
+        include/slottedpages/schema/Parser.hpp
+        include/slottedpages/schema/Schema.hpp
+        include/slottedpages/schema/Schema.cpp)
+
+set(BTREE_FILES
+        test/btreetest.cpp
+        src/operations.cpp
+        ${version_file}
+        include/dblite.h
+        include/operations.hpp
+        src/buffer/buffermanager.cpp
+        include/buffer/buffermanager.h
+        src/buffer/bufferframe.cpp
+        include/buffer/bufferframe.h
+        src/slottedpages/spsegment.cpp
+        include/slottedpages/spsegment.h
+        src/slottedpages/slottedpages.cpp
+        include/slottedpages/slottedpages.h
+        include/slottedpages/schema/Record.h
+        src/slottedpages/Record.cpp
+        include/slottedpages/tid.h
+        include/slottedpages/segment.h
+        include/slottedpages/schemasegment.h
+        src/slottedpages/segment.cpp
+        src/slottedpages/schemasegment.cpp
+        include/slottedpages/schema/Parser.cpp
+        include/slottedpages/schema/Parser.hpp
+        include/slottedpages/schema/Schema.hpp
+        include/slottedpages/schema/Schema.cpp
+        )
 
 
 # Executable
@@ -75,14 +128,16 @@ add_executable(DBLite_SPSegment ${SLOTTED_PAGE_FILES})
 
 add_executable(DBLite_SCHEMA ${SCHEMA_FILES})
 
+add_executable(DBLite_BTree ${BTREE_FILES})
 
 
+target_include_directories(DBLite_Esort PUBLIC include/e_sort)
+target_include_directories(DBLite_Buffer PUBLIC include/buffer)
+target_include_directories(DBLite_SPSegment PUBLIC include/slottedpages)
+target_include_directories(DBLite_SCHEMA PUBLIC include/slottedpages)
+target_include_directories(DBLite_BTree PUBLIC include/b_tree)
 
-target_include_directories(DBLite_Esort PUBLIC include/)
-target_include_directories(DBLite_Buffer PUBLIC include/)
-target_include_directories(DBLite_SPSegment PUBLIC include/)
-target_include_directories(DBLite_SCHEMA PUBLIC include/)
-
+#target_link_libraries(DBLite_BTree include/b_tree/btree.h src/b_tree/btree.cpp)
 
 
 # Test
@@ -95,6 +150,7 @@ set(DOXYGEN_TARGETS DBLite_Esort)
 set(DOXYGEN_TARGETS DBLite_Buffer)
 set(DOXYGEN_TARGETS DBLite_SPSegment)
 set(DOXYGEN_TARGETS DBLite_SCHEMA)
+set(DOXYGEN_TARGETS DBLite_BTree)
 
 
 include(doc/docs.cmake)
