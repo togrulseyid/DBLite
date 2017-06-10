@@ -92,7 +92,6 @@ set(SCHEMA_FILES
         include/slottedpages/schema/Schema.cpp)
 
 set(BTREE_FILES
-        test/btreetest.cpp
         src/operations.cpp
         ${version_file}
         include/dblite.h
