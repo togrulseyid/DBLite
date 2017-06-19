@@ -25,6 +25,7 @@ Artifacts
 * DBLite_Buffer - Buffer Manager
 * DBLite_SPSegment - Slottet Page
 * DBLite_SCHEMA - Schema(args: test.sql file)
+* DBLite_BTREE - B Tree implementation
 
 
 ### C++ Programming Style Guidelines

@@ -82,18 +82,10 @@ set(BTREE_FILES
 
 # Executable
 add_executable(DBLite_Esort ${ESORT_FILES})
-
 add_executable(DBLite_Buffer ${BUFFER_FILES})
-
 add_executable(DBLite_SPSegment ${SLOTTED_PAGE_FILES})
-
 add_executable(DBLite_SCHEMA ${SCHEMA_FILES})
-
 add_executable(DBLite_BTREE ${BTREE_FILES})
-
-#target_link_libraries(DBLite_BTREE src/btree/btree.cpp.o)
-#target_link_libraries(DBLite_BTREE ../DBLite_BTREE.dir/src/btree/btree.cpp.o)
-#target_link_libraries(DBLite_BTREE ../DBLite/cmake-build-debug/CMakeFiles/DBLite_BTREE.dir/src/btree/btree.cpp.o)
 
 target_include_directories(DBLite_Esort PUBLIC include/)
 target_include_directories(DBLite_Buffer PUBLIC include/)
