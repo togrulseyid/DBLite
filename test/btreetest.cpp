@@ -66,16 +66,15 @@ const IntPair &getKey(const uint64_t &i) {
 template<class T, class CMP>
 void test(uint64_t n) {
     // Set up stuff, you probably have to change something here to match to your interfaces
-    BufferManager bm(10000);
+    BufferManager bm(500);
     // ...
-    BTree<T, CMP> bTree(bm, 4);
+    BTree<T, CMP> bTree(bm, 0);
 
     // Insert values
     for (uint64_t i = 0; i < n; ++i) {
         TID tid_insert{i, (uint32_t) i};
         TID tid{0, 0};
         bTree.insert(getKey<T>(i), tid_insert);
-        //std::cout<<i<<std::endl;
         assert(bTree.lookup(getKey<T>(i), tid));
         assert(tid == tid_insert);
     }
@@ -99,8 +98,6 @@ void test(uint64_t n) {
         if ((i % 7) == 0) {
             bTree.erase(getKey<T>(i));
         }
-
-    //std::cout<<bTree.get_size()<<" sizeee"<<std::endl;
 
     // Check if the right ones have been deleted
     for (uint64_t i = 0; i < n; ++i) {

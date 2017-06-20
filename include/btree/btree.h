@@ -18,10 +18,11 @@ class BTree : Segment {
     uint32_t num_elements;
     uint64_t root_pg_id;
 
-    std::stack<uint64_t> free_pgs;
+    std::stack<uint64_t> free_pgs; // pages which were previously used, but currently not used anymore
 
-    uint64_t get_new_page(){
-        if(free_pgs.size() > 0){
+    uint64_t
+    get_new_page() { // return a new page id, if there is a free page which was used, returns it, otherwise new page id returned
+        if (free_pgs.size() > 0) {
             uint64_t ret = free_pgs.top();
             free_pgs.pop();
             return ret;
@@ -32,20 +33,20 @@ class BTree : Segment {
     class Node {
     protected:
         CMP cmp;
-        uint32_t cnt;
-        bool leaf;
+        uint32_t cnt; // the number of elements on the node
+        bool leaf; // specifies whether it is a leaf node
     public:
-        bool is_leaf() { return leaf; };
+        bool is_leaf() { return leaf; }; // checks whether it is a leaf node
 
-        virtual bool is_full() = 0;
+        virtual bool is_full() = 0; // checks whether it is already full
 
         Node(bool leaf) : leaf(leaf) { this->cnt = 0; };
     };
 
     class InnerNode : Node {
         static const int inner_size = (FRAME_SIZE - sizeof(Node) - 8) / (sizeof(K) + 8);
-        K keys[inner_size];
-        uint64_t child_pg_ids[inner_size + 1];
+        K keys[inner_size]; // InnerNode keys
+        uint64_t child_pg_ids[inner_size + 1]; // links from InnerNode to the below level nodes
 
     public:
         InnerNode() : Node(false) {};
@@ -63,7 +64,7 @@ class BTree : Segment {
 
         void split(BufferFrame *&fir, BufferFrame *&sec, K &key);
 
-        uint64_t get_child(K key) {
+        uint64_t get_child(K key) { // return the index of the key which is the first element not less than key
             return child_pg_ids[get_idx(key)];
         };
 
@@ -71,7 +72,7 @@ class BTree : Segment {
             return std::lower_bound(keys, keys + this->cnt, key, this->cmp) - keys;
         };
 
-        void print_dbg() {
+        void print_dbg() { // for debug purpose
             std::cout << "Inner printing: ";
             for (int i = 0; i < this->cnt; ++i)
                 std::cout << keys[i] << " ";
@@ -84,7 +85,6 @@ class BTree : Segment {
         static const int leaf_size = (FRAME_SIZE - sizeof(Node)) / (sizeof(K) + sizeof(TID));
         K keys[leaf_size];
         TID tids[leaf_size];
-
 
     public:
         LeafNode() : Node(true) {};
@@ -138,7 +138,7 @@ public:
     void update_par(K key, K mid_element, BufferFrame *&l_child, BufferFrame *&r_child, BufferFrame *&par_node_bf,
                     BufferFrame *&cur_node_bf);
 
-    void search_leaf(K key, LeafNode *&leaf_node, BufferFrame *&bf);
+    void search_leaf(K key, LeafNode *&leaf_node, BufferFrame *&bf); // searching for a key starting from root
 
 };
 
