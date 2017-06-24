@@ -84,7 +84,7 @@ void BTree<K, CMP>::insert(K key, TID tid) {
             BufferFrame *next_child = &this->bm.fixPage(inner_node->get_child(key), true); // finds the corresponding next level node
 
             if (par_node_bf != NULL)
-                this->bm.unfixPage(*par_node_bf, true);
+                this->bm.unfixPage(*par_node_bf, false);
             par_node_bf = cur_node_bf;
             cur_node_bf = next_child;
             node = static_cast<Node *>(cur_node_bf->getData());
