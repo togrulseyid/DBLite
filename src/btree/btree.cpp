@@ -9,16 +9,20 @@ uint32_t BTree<K, CMP>::get_size() { return num_elements; };
 
 template<class K, class CMP>
 void BTree<K, CMP>::search_leaf(K key, LeafNode *&leaf_node, BufferFrame *&bf) {
-    BufferFrame *cur_node_bf = &bm.fixPage(root_pg_id, true); // starting from root
+    BufferFrame *cur_node_bf = &bm.fixPage(root_pg_id, false); // starting from root
     Node *cur_node = static_cast<Node *>(cur_node_bf->getData());
+    BufferFrame *par_node_bf;
     while (!cur_node->is_leaf()) { // while it is InnerNode, we should go through till the leaf node
         InnerNode *inner_node = reinterpret_cast<InnerNode *>(cur_node);
         uint64_t next_pg_id = inner_node->get_child(key); // finds the page id of the corresponding following level node
-        bm.unfixPage(*cur_node_bf, true);
-        cur_node_bf = &bm.fixPage(next_pg_id, true);
+        par_node_bf = cur_node_bf;
+        //bm.unfixPage(*cur_node_bf, true);
+        cur_node_bf = &bm.fixPage(next_pg_id, false);
         cur_node = static_cast<Node *>(cur_node_bf->getData());
+        bm.unfixPage(*par_node_bf, false);
     }
-
+    bm.unfixPage(*cur_node_bf, false);
+    cur_node_bf = &bm.fixPage(cur_node_bf->getPageId(), true);
     leaf_node = reinterpret_cast<LeafNode *>(cur_node);
     bf = cur_node_bf;
 }
@@ -30,7 +34,7 @@ bool BTree<K, CMP>::lookup(K key, TID &tid) {
 
     search_leaf(key, leaf_node, bf); // getting the leaf node which is the last in the search path
     uint32_t idx = leaf_node->get_idx(key); // getting the index on that leaf node
-    bm.unfixPage(*bf, true);
+    bm.unfixPage(*bf, false);
     if (idx == leaf_node->get_cnt() || cmp(key, leaf_node->get_key(idx))) // checks whether it is on the key list
         return false;
 
