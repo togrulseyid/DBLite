@@ -79,6 +79,14 @@ set(BTREE_FILES
         src/btree/btree.cpp
         test/btreetest.cpp)
 
+set(OPERATORS_FILES
+        ${version_file}
+        src/operators/operators.cpp
+        src/operators/register.cpp
+        src/buffer/buffermanager.cpp
+        src/buffer/bufferframe.cpp
+        src/slottedpages/segment.cpp
+        test/operatorstest.cpp)
 
 # Executable
 add_executable(DBLite_Esort ${ESORT_FILES})
@@ -86,12 +94,15 @@ add_executable(DBLite_Buffer ${BUFFER_FILES})
 add_executable(DBLite_SPSegment ${SLOTTED_PAGE_FILES})
 add_executable(DBLite_SCHEMA ${SCHEMA_FILES})
 add_executable(DBLite_BTREE ${BTREE_FILES})
+add_executable(DBLite_Operators ${OPERATORS_FILES})
+
 
 target_include_directories(DBLite_Esort PUBLIC include/)
 target_include_directories(DBLite_Buffer PUBLIC include/)
 target_include_directories(DBLite_SPSegment PUBLIC include/)
 target_include_directories(DBLite_SCHEMA PUBLIC include/)
 target_include_directories(DBLite_BTREE PUBLIC include/)
+target_include_directories(DBLite_Operators PUBLIC include/)
 
 
 # Test
@@ -105,5 +116,7 @@ set(DOXYGEN_TARGETS DBLite_Buffer)
 set(DOXYGEN_TARGETS DBLite_SPSegment)
 set(DOXYGEN_TARGETS DBLite_SCHEMA)
 set(DOXYGEN_TARGETS DBLite_BTREE)
+set(DOXYGEN_TARGETS DBLite_Operators)
+
 
 include(doc/docs.cmake)
