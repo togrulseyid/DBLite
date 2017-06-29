@@ -12,7 +12,7 @@
 
 class BufferManager {
 public:
-    BufferManager(unsigned pageCount);
+    BufferManager(unsigned pageCount, std::string str = "");
 
     BufferFrame &fixPage(uint64_t pageId, bool exclusive); // to fix page pageId, with read/write lock
 
@@ -30,7 +30,7 @@ private:
     std::unordered_map<uint64_t, uint64_t> lru_val; // maps from pageId to timestamp on LRU
     std::set<std::pair<uint64_t, uint64_t>> lru; // LRU, to find the oldest added page
     uint64_t timestamp; // current time for LRU
-
+    std::string name;
     pthread_mutex_t lru_lock;
     pthread_mutex_t fr_map_lock;
 };

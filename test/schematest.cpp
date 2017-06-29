@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
     try {
-        BufferManager bm(100);
+        BufferManager bm(100, "schema");
 
         Schema *schema = Parser(argv[1]).parse();
         SchemaSegment schemaSegment(0, bm, schema); // write down schema to the BM/disk

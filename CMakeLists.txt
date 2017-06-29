@@ -106,9 +106,9 @@ target_include_directories(DBLite_Operators PUBLIC include/)
 
 
 # Test
-add_custom_target(stest
-        ../test/test.sh
-        )
+#add_custom_target(stest
+#        ../test/test.sh
+#        )
 
 # doxygen build
 set(DOXYGEN_TARGETS DBLite_Esort)

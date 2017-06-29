@@ -66,7 +66,7 @@ const IntPair &getKey(const uint64_t &i) {
 template<class T, class CMP>
 void test(uint64_t n) {
     // Set up stuff, you probably have to change something here to match to your interfaces
-    BufferManager bm(500);
+    BufferManager bm(500, "btree");
     // ...
     BTree<T, CMP> bTree(bm, 0);
 

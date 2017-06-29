@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
     unordered_map<unsigned, unsigned> usage; // pageID -> bytes used within this page
 
     // Setting everything
-    BufferManager bm(100);
+    BufferManager bm(100, "slottedpages");
     // TODO ...
     SPSegment sp(0, bm);
     Random64 rnd;
