@@ -10,15 +10,21 @@ class Register{
 
     union{
         uint32_t value;
-        string str;
+        char str[32];
     };
 
 public:
-    Register(auto type) : type(type);
+    Register(auto type) : type(type){};
 
-    void set(auto val);
+    void set(string str);
 
-    Types::Tag get();
+    void set(uint32_t val);
+
+    Types::Tag get_type();
+
+    string get_str();
+
+    uint32_t get_val();
 
     bool operator==(const Register &r);
 

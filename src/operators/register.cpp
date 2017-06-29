@@ -3,16 +3,29 @@
 //
 
 #include <operators/register.h>
+#include <slottedpages/schema/Types.hpp>
 
-void Register::set(auto val) {
-    if (type == Types::Tag::Integer)
-        value = val;
-    else
-        str = val;
+void Register::set(std::string str) {
+    // fill
+    memset(this->str, '\0', 32);
+    strcpy(this->str, str.c_str());
 }
 
-Types::Tag get() {
+void Register::set(uint32_t val) {
+    value = val;
+}
+
+Types::Tag Register::get_type() {
     return type;
+}
+
+std::string Register::get_str(){
+    std::string ret = str;
+    return ret;
+}
+
+uint32_t Register::get_val() {
+    return value;
 }
 
 bool Register::operator==(const Register &r) {
