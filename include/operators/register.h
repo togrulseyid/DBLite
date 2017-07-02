@@ -5,6 +5,8 @@
 #ifndef DBLITE_REGISTER_H
 #define DBLITE_REGISTER_H
 
+#include <slottedpages/schema/Types.hpp>
+
 class Register{
     Types::Tag type;
 
@@ -16,13 +18,13 @@ class Register{
 public:
     Register(auto type) : type(type){};
 
-    void set(string str);
+    void set(std::string str);
 
     void set(uint32_t val);
 
     Types::Tag get_type();
 
-    string get_str();
+    std::string get_str();
 
     uint32_t get_val();
 

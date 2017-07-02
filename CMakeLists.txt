@@ -13,7 +13,7 @@ include_directories("include/")
 
 # Flags
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall  -g -O1 -pthread ")
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -march=native -std=c++11 -g -O3 -pthread")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -march=native -std=c++14 -g -O3 -pthread")
 #set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -86,7 +86,13 @@ set(OPERATORS_FILES
         src/buffer/buffermanager.cpp
         src/buffer/bufferframe.cpp
         src/slottedpages/segment.cpp
-        test/operatorstest.cpp)
+        test/operatorstest.cpp
+        src/slottedpages/spsegment.cpp
+        src/slottedpages/slottedpages.cpp
+        src/slottedpages/Record.cpp
+        src/slottedpages/schemasegment.cpp
+
+        )
 
 # Executable
 add_executable(DBLite_Esort ${ESORT_FILES})

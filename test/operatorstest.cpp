@@ -20,8 +20,9 @@ std::vector<std::string> names{
 
 int main(int argc, char* argv[]){
 
-
-    BufferManager bm(1000);
+    BufferManager bm(1000, "operator");
     SPSegment spsegment(4, bm);
+
+
 
 }
