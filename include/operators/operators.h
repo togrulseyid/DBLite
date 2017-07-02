@@ -48,12 +48,12 @@ public:
 };
 
 class Print : Operator {
-    TableScan &table_scan;
+    Operator & _operator;
     std::vector<Register> registers;
     bool opened;
 
 public:
-    Print(TableScan &table_scan) : table_scan(table_scan) {
+    Print(Operator &_operator) : _operator(_operator) {
         opened = false;
     };
 
@@ -95,13 +95,25 @@ public:
 };
 
 class Selection : Operator {
-    TableScan &table_scan;
+    Operator & _operator;
     std::vector<Register> registers;
     bool opened;
+    uint8_t idx;
+    uint32_t value;
+    std::string string_val;
+    bool is_int;
 
 public:
-    Selection(TableScan &table_scan) : table_scan(table_scan) {
+    Selection(Operator &_operator, uint8_t idx, std::string val) : _operator(_operator), idx(idx){
+        string_val = val;
         opened = false;
+        is_int = false;
+    };
+
+    Selection(Operator &_operator, uint8_t idx, uint32_t val) : _operator(_operator), idx(idx){
+        value = val;
+        opened = false;
+        is_int = true;
     };
 
     void open();
@@ -114,12 +126,13 @@ public:
 };
 
 class Projection : Operator {
-    TableScan &table_scan;
+    Operator & _operator;
     std::vector<Register> registers;
+    std::vector<int> reg_ids;
     bool opened;
 
 public:
-    Projection(TableScan &table_scan) : table_scan(table_scan) {
+    Projection(Operator &_operator, std::vector<int> reg_ids) : _operator(_operator), reg_ids(reg_ids){
         opened = false;
     };
 
