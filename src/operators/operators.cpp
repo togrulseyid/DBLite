@@ -10,7 +10,6 @@ void TableScan::open(){
     cur_pg_id = 0;
     cur_slot_id = 0;
     last_pg_id = sp_segment.get_size();
-    //std::cout<<"last: "<<last_pg_id<<std::endl;
     opened = true;
 }
 
@@ -23,7 +22,6 @@ std::vector<Register> TableScan::getOutput() {
 }
 
 bool TableScan::next(){
-    //std::cout<<std::endl<<"tapildi"<<std::endl;
     if(cur_pg_id >= last_pg_id)
         return false;
 
@@ -45,12 +43,10 @@ bool TableScan::next(){
             reg.set(s);
         }
         registers.push_back(reg);
-        //registers.push_back(*reg);
     }
     bm.unfixPage(*bf, false);
 
     ++cur_slot_id;
-    //std::cout<<"slot size "<<cur_slot_id<<" "<<sl_pg->get_cnt_slots()<<" "<<last_pg_id<<std::endl;
 
     if(sl_pg->get_cnt_slots() == cur_slot_id)
         ++cur_pg_id, cur_slot_id = 0;

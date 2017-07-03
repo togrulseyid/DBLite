@@ -49,7 +49,6 @@ namespace std {
     template<>
     struct hash<Register> {
         size_t operator()(const Register &r) const {
-            //return (hash<uint64_t>()(v.get_val()) ^ (hash<uint16_t>()(v.slot_id)));
             return r.get_hash();
         }
     };

@@ -8,7 +8,6 @@
 #include <operators/operators.h>
 #include <iostream>
 
-
 std::vector<std::string> names{
         "Mahammad",
         "Toghrul",
@@ -28,8 +27,6 @@ std::vector<std::string> jobs{
         "Doctor",
         "Manager"
 };
-
-
 
 std::vector<std::pair<int, int> > test_vec;
 std::unordered_map<int, std::string> map_job;
