@@ -159,7 +159,6 @@ std::vector<Register> Print::getOutput() {
     }
 
     std::cout<< ss.str() << std::endl;
-
     return registers;
 }
 

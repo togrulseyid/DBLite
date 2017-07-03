@@ -26,6 +26,7 @@ Artifacts
 * DBLite_SPSegment - Slottet Page
 * DBLite_SCHEMA - Schema(args: test.sql file)
 * DBLite_BTREE - B Tree implementation
+* DBLite_Operators - Operators
 
 
 ### C++ Programming Style Guidelines
