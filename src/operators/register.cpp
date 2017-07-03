@@ -8,7 +8,7 @@
 
 void Register::set(std::string str) {
     // fill
-    memset(this->str, '\0', 32);
+    memset(this->str, '\0', 32); // string may have less chars, that's why beforehand filled with '\0'
     strcpy(this->str, str.c_str());
 }
 

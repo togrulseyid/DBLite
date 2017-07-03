@@ -14,9 +14,9 @@
 #include <utility>
 
 class Register{
-    Types::Tag type;
+    Types::Tag type; // type of Register
 
-    union{
+    union{ // value is either int or string
         int value;
         char str[32];
     };
@@ -24,20 +24,20 @@ class Register{
 public:
     Register(auto type) : type(type){};
 
-    void set(std::string str);
+    void set(std::string str); // set the string value
 
-    void set(uint32_t val);
+    void set(uint32_t val); // set the integer value
 
-    Types::Tag get_type() const;
+    Types::Tag get_type() const; // return type of the Register
 
-    std::string get_str() const;
+    std::string get_str() const; // return string value
 
-    int get_val() const;
+    int get_val() const; // return integer value
 
     bool operator==(const Register &r) const;
     bool operator<(const Register &r) const;
 
-    size_t get_hash() const{
+    size_t get_hash() const{ // calculation of hash
         if(this->get_type() == Types::Tag::Integer)
             return std::hash<uint64_t>() (this->get_val());
         else
@@ -48,7 +48,7 @@ public:
 namespace std {
     template<>
     struct hash<Register> {
-        size_t operator()(const Register &r) const {
+        size_t operator()(const Register &r) const { // hash function for Register
             return r.get_hash();
         }
     };
