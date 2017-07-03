@@ -23,7 +23,7 @@ std::vector<std::string> names{
 
 std::vector<std::pair<int, int> > test_vec;
 
-bool check(std::vector<Register> registers){
+bool check_projection(std::vector<Register> registers){
     for(std::pair<int, int> ppair : test_vec){
         if(registers[0].get_val() == ppair.first && registers[1].get_val() == ppair.second)
             return true;
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]){
     Print print(*projection);
     while(print.next()){
         std::vector<Register> registers = print.getOutput();
-        if(!check(registers)){
+        if(!check_projection(registers)){
             std::cout<<"Selection and Projection test unsuccessful"<<std::endl;
         }
     }

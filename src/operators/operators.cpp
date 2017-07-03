@@ -144,7 +144,7 @@ std::vector<Register> Print::getOutput() {
             ss << " ";
     }
 
-    std::cout<< ss.str() << std::endl;
+    //std::cout<< ss.str() << std::endl;
 
     return registers;
 }
