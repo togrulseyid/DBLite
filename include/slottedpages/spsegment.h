@@ -26,6 +26,8 @@ public:
     bool update(TID tid, const Record &r); // update the record with tid with new record
 
     SPSegment(uint16_t segment_id, BufferManager &buffer_manager);
+
+    uint64_t get_size() {return size;};
 };
 
 #endif //DBLITE_SPSEGMENT_H

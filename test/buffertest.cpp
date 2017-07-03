@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
     for (unsigned i=0; i<threadCount; i++)
         threadSeed[i] = i*97134;
 
-    bm = new BufferManager(pagesInRAM);
+    bm = new BufferManager(pagesInRAM, "buffer");
 
     vector<pthread_t> threads(threadCount);
     pthread_attr_t pattr;
@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
 
     // restart buffer manager
     delete bm;
-    bm = new BufferManager(pagesInRAM);
+    bm = new BufferManager(pagesInRAM, "buffer");
 
     // check counter
     unsigned totalCountOnDisk = 0;

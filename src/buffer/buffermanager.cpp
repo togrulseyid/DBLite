@@ -6,13 +6,15 @@
 #include <iostream>
 #include <fcntl.h>
 #include <unistd.h>
+#include <string>
 
-BufferManager::BufferManager(unsigned pageCount) {
+BufferManager::BufferManager(unsigned pageCount, std::string str) {
     this->max_frame_cnt = pageCount;
     this->frame_cnt = 0;
     this->timestamp = 0; // current timestamp is 0, as it is the beginning of BufferManager
     pthread_mutex_init(&lru_lock, NULL);
     pthread_mutex_init(&fr_map_lock, NULL);
+    name = str;
 }
 
 BufferFrame *BufferManager::readData(uint64_t pageId) {
@@ -25,7 +27,7 @@ BufferFrame *BufferManager::readData(uint64_t pageId) {
     if (find_fd != segment_fd.end()) { // already opened
         fd = find_fd->second;
     } else { // opening/creating a new segment file
-        std::string file = "segment_" + std::to_string(segmentId);
+        std::string file = "segment_" + std::to_string(segmentId) + name;
         fd = open(file.c_str(), O_RDWR | O_CREAT, 0666);
         if (fd < 0)
             std::cerr << "Segment file can't be created" << std::endl;

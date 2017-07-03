@@ -50,6 +50,8 @@ public:
     char* get_data(uint16_t slot_id); // return the data on the slots
 
     SlottedPage();
+
+    int get_cnt_slots(){ return header.slotCount;};
 };
 
 
