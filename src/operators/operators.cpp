@@ -106,7 +106,7 @@ bool Selection::next(){
     return false;
 }
 
-void Join::open(){
+void HashJoin::open(){
     while(left.next()){
         std::vector<Register> registers = left.getOutput();
         hashmap.insert({registers[left_reg_id], registers});
@@ -114,29 +114,31 @@ void Join::open(){
     opened = true;
 }
 
-void Join::close() {
+void HashJoin::close() {
     opened = false;
 }
 
-std::vector<Register> Join::getOutput() {
+std::vector<Register> HashJoin::getOutput() {
     return registers;
 }
 
-bool Join::next(){
+bool HashJoin::next(){
     while(right.next()){
         std::vector<Register> regs = right.getOutput();
         std::unordered_map<Register, std::vector<Register> >:: iterator it = hashmap.find(regs[right_reg_id]);
         if(it != hashmap.end()){
             registers = it->second;
 
-            for(Register reg : regs){
-                registers.push_back(reg);
-            }
+            for(int i = 0; i < right_reg_id; ++i)
+                registers.push_back(regs[i]);
+
+            for(int i = right_reg_id + 1; i < (int)regs.size(); ++i)
+                registers.push_back(regs[i]);
+
             return true;
         }
     }
-
-    return true; // implement this
+    return false;
 }
 
 void Print::open(){
@@ -158,9 +160,10 @@ std::vector<Register> Print::getOutput() {
             ss << reg.get_str();
         for(int i = ss.str().size(); i < len; ++i)
             ss << " ";
+        ss << "|";
     }
 
-    //std::cout<< ss.str() << std::endl;
+    std::cout<< ss.str() << std::endl;
 
     return registers;
 }

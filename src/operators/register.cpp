@@ -4,6 +4,7 @@
 
 #include <operators/register.h>
 #include <slottedpages/schema/Types.hpp>
+#include <iostream>
 
 void Register::set(std::string str) {
     // fill
@@ -29,15 +30,16 @@ int Register::get_val() const{
 }
 
 bool Register::operator==(const Register& r) const {
+
     if (this->type == Types::Tag::Integer)
         return this->value == r.value;
     else
-        return this->str == r.str;
+        return this->get_str() == r.get_str();
 }
 
 bool Register::operator<(const Register& r) const {
     if(this->type == Types::Tag::Integer)
         return this->value < r.value;
     else
-        return this->str < r.str;
+        return this->get_str() < r.get_str();
 }

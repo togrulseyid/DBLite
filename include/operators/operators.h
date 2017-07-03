@@ -66,7 +66,7 @@ public:
 
 };
 
-class Join : public Operator {
+class HashJoin : public Operator {
 
     Operator &left, &right;
     std::unordered_map<Register, std::vector<Register>> hashmap;
@@ -76,7 +76,7 @@ class Join : public Operator {
     bool opened;
 
 public:
-    Join(Operator &left, Operator &right, int left_reg_id, int right_reg_id) : left(left), right(right),
+    HashJoin(Operator &left, Operator &right, int left_reg_id, int right_reg_id) : left(left), right(right),
                                                                                  left_reg_id(left_reg_id),
                                                                                  right_reg_id(right_reg_id) {
         opened = false;
