@@ -47,7 +47,7 @@ public:
 };
 
 class Print : public Operator {
-    Operator & _operator;
+    Operator &_operator;
     std::vector<Register> registers;
     bool opened;
 
@@ -68,18 +68,17 @@ public:
 
 class Join : public Operator {
 
-    BufferManager &bm;
-    SPSegment &sp_segment;
-    std::vector<Schema::Relation::Attribute> attributes;
+    Operator &left, &right;
+    std::unordered_map<Register, std::vector<Register>> hashmap;
+    int left_reg_id;
+    int right_reg_id;
     std::vector<Register> registers;
-    uint64_t cur_pg_id;
-    uint32_t cur_slot_id;
-    uint64_t last_pg_id;
     bool opened;
 
 public:
-    Join(BufferManager &bm, SPSegment &sp_segment, Schema::Relation &relation) : bm(bm), sp_segment(sp_segment),
-                                                                                 attributes(relation.attributes) {
+    Join(Operator &left, Operator &right, int left_reg_id, int right_reg_id) : left(left), right(right),
+                                                                                 left_reg_id(left_reg_id),
+                                                                                 right_reg_id(right_reg_id) {
         opened = false;
     };
 
@@ -94,22 +93,22 @@ public:
 };
 
 class Selection : public Operator {
-    Operator & _operator;
+    Operator &_operator;
     std::vector<Register> registers;
     bool opened;
     uint8_t idx;
-    uint32_t value;
+    int value;
     std::string string_val;
     bool is_int;
 
 public:
-    Selection(Operator &_operator, uint8_t idx, std::string val) : _operator(_operator), idx(idx){
+    Selection(Operator &_operator, uint8_t idx, std::string val) : _operator(_operator), idx(idx) {
         string_val = val;
         opened = false;
         is_int = false;
     };
 
-    Selection(Operator &_operator, uint8_t idx, uint32_t val) : _operator(_operator), idx(idx){
+    Selection(Operator &_operator, uint8_t idx, uint32_t val) : _operator(_operator), idx(idx) {
         value = val;
         opened = false;
         is_int = true;
@@ -125,13 +124,13 @@ public:
 };
 
 class Projection : public Operator {
-    Operator & _operator;
+    Operator &_operator;
     std::vector<Register> registers;
     std::vector<int> reg_ids;
     bool opened;
 
 public:
-    Projection(Operator &_operator, std::vector<int> reg_ids) : _operator(_operator), reg_ids(reg_ids){
+    Projection(Operator &_operator, std::vector<int> reg_ids) : _operator(_operator), reg_ids(reg_ids) {
         opened = false;
     };
 

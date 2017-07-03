@@ -31,7 +31,6 @@ bool TableScan::next(){
 
     SlottedPage* sl_pg = static_cast<SlottedPage*>(bf->getData());
 
-    uint32_t offset = 0;
     registers.clear();
     for(int i = 0; i < (int)attributes.size(); ++i){
         char* data = (sl_pg->get_data(cur_slot_id) + (i * 32));
@@ -108,6 +107,10 @@ bool Selection::next(){
 }
 
 void Join::open(){
+    while(left.next()){
+        std::vector<Register> registers = left.getOutput();
+        hashmap.insert({registers[left_reg_id], registers});
+    }
     opened = true;
 }
 
@@ -120,6 +123,19 @@ std::vector<Register> Join::getOutput() {
 }
 
 bool Join::next(){
+    while(right.next()){
+        std::vector<Register> regs = right.getOutput();
+        std::unordered_map<Register, std::vector<Register> >:: iterator it = hashmap.find(regs[right_reg_id]);
+        if(it != hashmap.end()){
+            registers = it->second;
+
+            for(Register reg : regs){
+                registers.push_back(reg);
+            }
+            return true;
+        }
+    }
+
     return true; // implement this
 }
 

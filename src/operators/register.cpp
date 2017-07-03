@@ -15,29 +15,29 @@ void Register::set(uint32_t val) {
     value = val;
 }
 
-Types::Tag Register::get_type() {
+Types::Tag Register::get_type() const {
     return type;
 }
 
-std::string Register::get_str(){
+std::string Register::get_str() const{
     std::string ret = str;
     return ret;
 }
 
-int Register::get_val() {
+int Register::get_val() const{
     return value;
 }
 
-bool Register::operator==(const Register &r) {
-    if (type == Types::Tag::Integer)
-        return value == r.value;
+bool Register::operator==(const Register& r) const {
+    if (this->type == Types::Tag::Integer)
+        return this->value == r.value;
     else
-        return str == r.str;
+        return this->str == r.str;
 }
 
-bool Register::operator<(const Register &r) {
-    if(type == Types::Tag::Integer)
-        return value < r.value;
+bool Register::operator<(const Register& r) const {
+    if(this->type == Types::Tag::Integer)
+        return this->value < r.value;
     else
-        return str < r.str;
+        return this->str < r.str;
 }
