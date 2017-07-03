@@ -11,7 +11,7 @@ class Register{
     Types::Tag type;
 
     union{
-        uint32_t value;
+        int value;
         char str[32];
     };
 
@@ -26,7 +26,7 @@ public:
 
     std::string get_str();
 
-    uint32_t get_val();
+    int get_val();
 
     bool operator==(const Register &r);
 

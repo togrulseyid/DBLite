@@ -11,24 +11,23 @@
 
 class Operator {
 public:
-    Operator();
 
     virtual void open() = 0;
 
     virtual bool next() = 0;
 
-    virtual std::vector<Register> getOutput() const = 0;
+    virtual std::vector<Register> getOutput() = 0;
 
     virtual void close() = 0;
 };
 
-class TableScan : Operator {
+class TableScan : public Operator {
     BufferManager &bm;
     SPSegment &sp_segment;
     std::vector<Schema::Relation::Attribute> attributes;
     std::vector<Register> registers;
     uint64_t cur_pg_id;
-    uint32_t cur_slot_id;
+    int cur_slot_id;
     uint64_t last_pg_id;
     bool opened;
 
@@ -47,7 +46,7 @@ public:
     std::vector<Register> getOutput();
 };
 
-class Print : Operator {
+class Print : public Operator {
     Operator & _operator;
     std::vector<Register> registers;
     bool opened;
@@ -67,7 +66,7 @@ public:
 
 };
 
-class Join : Operator {
+class Join : public Operator {
 
     BufferManager &bm;
     SPSegment &sp_segment;
@@ -94,7 +93,7 @@ public:
 
 };
 
-class Selection : Operator {
+class Selection : public Operator {
     Operator & _operator;
     std::vector<Register> registers;
     bool opened;
@@ -125,7 +124,7 @@ public:
     std::vector<Register> getOutput();
 };
 
-class Projection : Operator {
+class Projection : public Operator {
     Operator & _operator;
     std::vector<Register> registers;
     std::vector<int> reg_ids;
@@ -144,6 +143,5 @@ public:
 
     std::vector<Register> getOutput();
 };
-
 
 #endif //DBLITE_OPERATORS_H

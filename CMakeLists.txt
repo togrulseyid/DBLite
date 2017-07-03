@@ -91,7 +91,6 @@ set(OPERATORS_FILES
         src/slottedpages/slottedpages.cpp
         src/slottedpages/Record.cpp
         src/slottedpages/schemasegment.cpp
-
         )
 
 # Executable

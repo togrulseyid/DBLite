@@ -24,7 +24,7 @@ std::string Register::get_str(){
     return ret;
 }
 
-uint32_t Register::get_val() {
+int Register::get_val() {
     return value;
 }
 
