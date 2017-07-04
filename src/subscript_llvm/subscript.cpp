@@ -13,9 +13,8 @@
 // The goal of this snippet is to create in the memory the LLVM module
 // consisting of one function as follow:
 //
-//   int fib(int x) {
-//     if(x<=2) return 1;
-//     return fib(x-1)+fib(x-2);
+//   int f(int v1, int v2, int v3, int v4) {
+//     return (v1 + v2) * (v3 - v4);
 //   }
 //
 // Once we have this, we compile the module via JIT, then execute the `fib'
@@ -49,10 +48,10 @@
 
 using namespace llvm;
 
-static Function *CreateFibFunction(Module *M, LLVMContext &Context) {
+static Function *CreateFFunction(Module *M, LLVMContext &Context) {
 
   Function *FibF =
-    cast<Function>(M->getOrInsertFunction("fib", Type::getInt32Ty(Context),
+    cast<Function>(M->getOrInsertFunction("f", Type::getInt32Ty(Context),
                                           Type::getInt32Ty(Context),
                                           Type::getInt32Ty(Context),
                                           Type::getInt32Ty(Context),
@@ -98,7 +97,7 @@ int main(int argc, char **argv) {
 
   std::unique_ptr<Module> Owner(new Module("test", Context));
   Module *M = Owner.get();
-  Function *FibF = CreateFibFunction(M, Context);
+  Function *FibF = CreateFFunction(M, Context);
   std::string errStr;
   ExecutionEngine *EE =
     EngineBuilder(std::move(Owner))
@@ -120,9 +119,7 @@ int main(int argc, char **argv) {
 
   errs() << "OK\n";
   errs() << "We just constructed this LLVM module:\n\n---------\n" << *M;
-  //errs() << "---------\nstarting fibonacci(" << n << ") with JIT...\n";
 
-  // Call the Fibonacci function with argument n:
   std::vector<GenericValue> Args(4);
   Args[0].IntVal = APInt(32, v1);
   Args[1].IntVal = APInt(32, v2);
