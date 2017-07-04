@@ -27,6 +27,7 @@ Artifacts
 * DBLite_SCHEMA - Schema(args: test.sql file)
 * DBLite_BTREE - B Tree implementation
 * DBLite_Operators - Operators
+* Subscript - cd src/subscript_llvm && make && ./subscript 1 2 5 2
 
 
 ### C++ Programming Style Guidelines
