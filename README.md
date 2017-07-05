@@ -23,7 +23,7 @@ Artifacts
 * DBLite - the main service
 * DBLite_Esort -  External sort
 * DBLite_Buffer - Buffer Manager
-* DBLite_SPSegment - Slottet Page
+* DBLite_SPSegment - Slotted Page
 * DBLite_SCHEMA - Schema(args: test.sql file)
 * DBLite_BTREE - B Tree implementation
 * DBLite_Operators - Operators
