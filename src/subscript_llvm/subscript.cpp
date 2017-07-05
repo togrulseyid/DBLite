@@ -1,5 +1,3 @@
-//===--- examples/Fibonacci/fibonacci.cpp - An example use of the JIT -----===//
-//
 //                     The LLVM Compiler Infrastructure
 //
 // This file is distributed under the University of Illinois Open Source
