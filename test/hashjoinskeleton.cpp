@@ -91,7 +91,7 @@ public:
         Entry *next;
     };
     uint64_t size;
-    std::atomic<Entry *> *table;
+    std::atomic<Entry*> *table;
     tbb::spin_mutex *locks;
 
     // Constructor
@@ -109,7 +109,7 @@ public:
     // Returns the number of hits
     inline uint64_t lookup(uint64_t key) {
         uint32_t idx = hashKey(key) % size;
-        Entry *head = table[idx];
+        Entry *head = table[idx].load();
         uint64_t cnt = 0;
         while (head != NULL) {
             if (head->key == key)
@@ -123,7 +123,7 @@ public:
         uint64_t idx = hashKey(entry->key) % size;
         do {
             entry->next = table[idx].load();
-        } while (!std::atomic_compare_exchange_weak_explicit(table[idx], entry->next, entry));
+        } while (!table[idx].compare_exchange_weak(entry->next, entry));
     }
 };
 
@@ -135,9 +135,17 @@ public:
         uint64_t value;
         std::atomic<bool> marker;
     };
+    uint64_t size;
+    uint64_t *keys;
+    uint64_t *values;
+    std::atomic<bool> *used;
+
 
     // Constructor
-    LinearProbingHT(uint64_t size) {
+    LinearProbingHT(uint64_t size) : size(get_size(size)) {
+        keys = new uint64_t[size];
+        values = new uint64_t[size];
+        used = new std::atomic<bool>[size];
     }
 
     // Destructor
@@ -146,9 +154,23 @@ public:
 
     // Returns the number of hits
     inline uint64_t lookup(uint64_t key) {
+        int idx = hashKey(key) % size;
+        int cnt = 0;
+        int num_elems = 0;
+        while (used[idx].load() && num_elems <= size) {
+            if (keys[idx] == key)
+                ++cnt;
+            ++num_elems;
+            idx = (idx + 1) % size;
+        }
+        return cnt;
     }
 
     inline void insert(uint64_t key, uint64_t value) {
+        uint64_t idx = hashKey(key) % size;
+        while(used[idx].exchange(true)) {
+            idx = (idx + 1) % size;
+        }
     }
 };
 
