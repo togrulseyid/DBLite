@@ -77,7 +77,7 @@ public:
         uint32_t idx = hashKey(entry->key) % size;
         locks[idx].lock();
         entry->next = table[idx];
-        swap(entry->next, table[idx]);
+        swap(entry, table[idx]);
         locks[idx].unlock();
     }
 };
@@ -123,7 +123,7 @@ public:
         uint64_t idx = hashKey(entry->key) % size;
         do {
             entry->next = table[idx].load();
-        } while (!table[idx].compare_exchange_weak(entry->next));
+        } while (!std::atomic_compare_exchange_weak_explicit(table[idx], entry->next, entry));
     }
 };
 
