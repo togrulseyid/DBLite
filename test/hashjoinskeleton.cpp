@@ -76,9 +76,8 @@ public:
     inline void insert(Entry *entry) {
         uint32_t idx = hashKey(entry->key) % size;
         locks[idx].lock();
-        Entry *temp = table[idx];
-        table[idx] = entry;
-        entry->next = temp;
+        entry->next = table[idx];
+        swap(entry->next, table[idx]);
         locks[idx].unlock();
     }
 };
@@ -124,7 +123,7 @@ public:
         uint64_t idx = hashKey(entry->key) % size;
         do {
             entry->next = table[idx].load();
-        } while (!table[idx].compare_exchange_weak(entry->next, entry));
+        } while (!table[idx].compare_exchange_weak(entry->next));
     }
 };
 
