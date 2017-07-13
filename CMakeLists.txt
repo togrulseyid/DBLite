@@ -13,7 +13,7 @@ include_directories("include/")
 
 # Flags
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall  -g -O1 -pthread ")
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -march=native -std=c++14 -g -O3 -pthread ")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -march=native -g -O3 -pthread -std=c++11")
 #set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -93,6 +93,12 @@ set(OPERATORS_FILES
         src/slottedpages/schemasegment.cpp
         )
 
+set(PAR_HASH_JOIN_FILES
+        ${version_file}
+        test/hashjoinskeleton.cpp
+        )
+
+
 # Executable
 add_executable(DBLite_Esort ${ESORT_FILES})
 add_executable(DBLite_Buffer ${BUFFER_FILES})
@@ -100,6 +106,8 @@ add_executable(DBLite_SPSegment ${SLOTTED_PAGE_FILES})
 add_executable(DBLite_SCHEMA ${SCHEMA_FILES})
 add_executable(DBLite_BTREE ${BTREE_FILES})
 add_executable(DBLite_Operators ${OPERATORS_FILES})
+add_executable(DBLite_Parallel_Hash_Join ${PAR_HASH_JOIN_FILES})
+
 
 
 target_include_directories(DBLite_Esort PUBLIC include/)
@@ -108,6 +116,8 @@ target_include_directories(DBLite_SPSegment PUBLIC include/)
 target_include_directories(DBLite_SCHEMA PUBLIC include/)
 target_include_directories(DBLite_BTREE PUBLIC include/)
 target_include_directories(DBLite_Operators PUBLIC include/)
+target_include_directories(DBLite_Parallel_Hash_Join PUBLIC include/)
+
 
 
 # Test
@@ -122,6 +132,8 @@ set(DOXYGEN_TARGETS DBLite_SPSegment)
 set(DOXYGEN_TARGETS DBLite_SCHEMA)
 set(DOXYGEN_TARGETS DBLite_BTREE)
 set(DOXYGEN_TARGETS DBLite_Operators)
+set(DOXYGEN_TARGETS DBLite_Parallel_Hash_Join)
+
 
 
 include(doc/docs.cmake)
