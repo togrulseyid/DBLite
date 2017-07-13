@@ -45,16 +45,16 @@ public:
         Entry *next;
     };
 
-
     Entry **table;
-    tbb::spin_mutex *locks;
+    tbb::spin_mutex* locks;
 
     // Constructor
     ChainingLockingHT(uint64_t size) : size(get_size(size)) {
         locks = (spin_mutex *) (malloc(sizeof(spin_mutex *) * size));
+        for(int i = 0; i < size; ++i)
+            locks[i].internal_construct();
         table = (Entry **) (malloc(sizeof(Entry **) * size));
     }
-
 
     // Destructor
     ~ChainingLockingHT() {
@@ -65,9 +65,11 @@ public:
         uint32_t idx = hashKey(key) % size;
         Entry *head = table[idx];
         uint64_t cnt = 0;
-        while (head != NULL)
+        while (head != NULL){
             if (head->key == key)
                 ++cnt;
+            head = head -> next;
+        }
         return cnt;
     }
 
