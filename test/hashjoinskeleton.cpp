@@ -46,14 +46,14 @@ public:
     };
 
     Entry **table;
-    tbb::spin_mutex* locks;
+    tbb::spin_mutex *locks;
 
     // Constructor
     ChainingLockingHT(uint64_t size) : size(get_size(size)) {
-        locks = (spin_mutex *) (malloc(sizeof(spin_mutex *) * size));
-        for(int i = 0; i < size; ++i)
+        locks = new tbb::spin_mutex[size];
+        for (int i = 0; i < size; ++i)
             locks[i].internal_construct();
-        table = (Entry **) (malloc(sizeof(Entry **) * size));
+        table = new Entry *[size];
     }
 
     // Destructor
@@ -65,10 +65,10 @@ public:
         uint32_t idx = hashKey(key) % size;
         Entry *head = table[idx];
         uint64_t cnt = 0;
-        while (head != NULL){
+        while (head != NULL) {
             if (head->key == key)
                 ++cnt;
-            head = head -> next;
+            head = head->next;
         }
         return cnt;
     }
@@ -91,10 +91,16 @@ public:
         uint64_t value;
         Entry *next;
     };
+    uint64_t size;
+    std::atomic<Entry *> *table;
+    tbb::spin_mutex *locks;
 
     // Constructor
-    ChainingHT(uint64_t size) {
-
+    ChainingHT(uint64_t size) : size(get_size(size)) {
+        locks = new tbb::spin_mutex[size];
+        for (int i = 0; i < size; ++i)
+            locks[i].internal_construct();
+        table = new std::atomic<Entry *>[size];
     }
 
     // Destructor
@@ -103,10 +109,22 @@ public:
 
     // Returns the number of hits
     inline uint64_t lookup(uint64_t key) {
-        return 5;
+        uint32_t idx = hashKey(key) % size;
+        Entry *head = table[idx];
+        uint64_t cnt = 0;
+        while (head != NULL) {
+            if (head->key == key)
+                ++cnt;
+            head = head->next;
+        }
+        return cnt;
     }
 
     inline void insert(Entry *entry) {
+        uint64_t idx = hashKey(entry->key) % size;
+        do {
+            entry->next = table[idx].load();
+        } while (!table[idx].compare_exchange_weak(entry->next, entry));
     }
 };
 
