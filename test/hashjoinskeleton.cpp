@@ -171,6 +171,8 @@ public:
         while(used[idx].exchange(true)) {
             idx = (idx + 1) % size;
         }
+        keys[idx] = key;
+        values[idx] = value;
     }
 };
 
