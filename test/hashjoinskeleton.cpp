@@ -62,12 +62,12 @@ public:
     tbb::spin_mutex *locks;
 
     // Constructor
-    ChainingLocking(uint64_t sizee, bool prime = false) : size(get_size(sizee, prime)) {
-        locks = new tbb::spin_mutex[size];
-        for (int i = 0; i < size; ++i)
+    ChainingLocking(uint64_t size, bool prime = false) : size(get_size(size, prime)) {
+        locks = new tbb::spin_mutex[this->size];
+        for (int i = 0; i < this->size; ++i)
             locks[i].internal_construct();
-        table = new Entry *[size];
-        for (int i = 0; i < size; ++i)
+        table = new Entry *[this->size];
+        for (int i = 0; i < this->size; ++i)
             table[i] = NULL;
     }
 
@@ -114,10 +114,10 @@ public:
     std::atomic<Entry *> *table;
 
     // Constructor
-    ChainingLockFree(uint64_t sizee, bool prime = false) : size(get_size(sizee, prime)) {
+    ChainingLockFree(uint64_t size, bool prime = false) : size(get_size(size, prime)) {
 
-        table = new std::atomic<Entry *>[size];
-        for(int i = 0; i < size; ++i)
+        table = new std::atomic<Entry *>[this->size];
+        for(int i = 0; i < this->size; ++i)
             table[i] = NULL;
     }
 
@@ -163,11 +163,11 @@ public:
     std::atomic<bool> *used;
 
     // Constructor
-    LinearProbing(uint64_t sizee, bool prime = false) : size(get_size(sizee, prime)) {
-        keys = new uint64_t[size];
-        values = new uint64_t[size];
-        used = new std::atomic<bool>[size];
-        for(int i = 0; i < size; ++i)
+    LinearProbing(uint64_t size, bool prime = false) : size(get_size(size, prime)) {
+        keys = new uint64_t[this->size];
+        values = new uint64_t[this->size];
+        used = new std::atomic<bool>[this->size];
+        for(int i = 0; i < this->size; ++i)
             used[i] = false;
     }
 
@@ -186,7 +186,6 @@ public:
             if (keys[idx] == key)
                 ++cnt;
             idx = (idx + 1) % size;
-
         }
         return cnt;
     }
@@ -232,7 +231,7 @@ int main(int argc, char **argv) {
         for (uint64_t i = 0; i < sizeR; i++)
             ht.emplace(R[i], 0);
         tick_count probeTS = tick_count::now();
-        cout << "STL\t\t\t\tbuild:" << (sizeR / 1e6) / (probeTS - buildTS).seconds() << "MT/s\t";
+        cout << "STL\t\t\tbuild:" << (sizeR / 1e6) / (probeTS - buildTS).seconds() << "MT/s\t";
 
         // Probe hash table and count number of hits
         std::atomic<uint64_t> hitCounter;
@@ -299,7 +298,7 @@ int main(int argc, char **argv) {
         });
 
         const auto probeTS = tick_count::now();
-        cout << "ChainingLockFree\t\t\tbuild:" << (double(sizeR) / 1e6) / (probeTS - buildTS).seconds() << "MT/s\t";
+        cout << "ChainingLockFree\tbuild:" << (double(sizeR) / 1e6) / (probeTS - buildTS).seconds() << "MT/s\t";
 
         // Probe hash table and count number of hits
         std::atomic<uint64_t> hitCounter;
@@ -330,7 +329,7 @@ int main(int argc, char **argv) {
         });
 
         const auto probeTS = tick_count::now();
-        cout << "LinearProbing\t\t\tbuild:" << (double(sizeR) / 1e6) / (probeTS - buildTS).seconds() << "MT/s\t";
+        cout << "LinearProbing\t\tbuild:" << (double(sizeR) / 1e6) / (probeTS - buildTS).seconds() << "MT/s\t";
 
         // Probe hash table and count number of hits
         std::atomic<uint64_t> hitCounter;
@@ -347,7 +346,7 @@ int main(int argc, char **argv) {
              << "total: " << (double(sizeR + sizeS) / 1e6) / (stopTS - buildTS).seconds() << "MT/s\t"
              << "count: " << hitCounter << endl;
     }
-
+    // generating primes up to 10000000
     for(int i = 2; i <= 10000000; ++i){
         if(!used[i]) {
             for(int j = 2 * i; j <= 10000000; j += i)
@@ -361,8 +360,7 @@ int main(int argc, char **argv) {
 
 
     // the same with prime number of slots for hash table
-    cout<<"With prime number of slots for hash table"<<endl;
-
+    cout<<endl<<"The same with prime number of slots for hash table"<<endl<<endl;
     // ChainingLocking
     {
         // Building hash table in a parallel fashion
@@ -407,7 +405,7 @@ int main(int argc, char **argv) {
         });
 
         const auto probeTS = tick_count::now();
-        cout << "ChainingLockFree\t\t\tbuild:" << (double(sizeR) / 1e6) / (probeTS - buildTS).seconds() << "MT/s\t";
+        cout << "ChainingLockFree\tbuild:" << (double(sizeR) / 1e6) / (probeTS - buildTS).seconds() << "MT/s\t";
 
         // Probe hash table and count number of hits
         std::atomic<uint64_t> hitCounter;
@@ -437,7 +435,7 @@ int main(int argc, char **argv) {
             }
         });
         const auto probeTS = tick_count::now();
-        cout << "LinearProbing\t\t\tbuild:" << (double(sizeR) / 1e6) / (probeTS - buildTS).seconds() << "MT/s\t";
+        cout << "LinearProbing\t\tbuild:" << (double(sizeR) / 1e6) / (probeTS - buildTS).seconds() << "MT/s\t";
 
         // Probe hash table and count number of hits
         std::atomic<uint64_t> hitCounter;
