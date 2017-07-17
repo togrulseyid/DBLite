@@ -28,6 +28,7 @@ Artifacts
 * DBLite_BTREE - B Tree implementation
 * DBLite_Operators - Operators
 * Subscript - cd src/subscript_llvm && make && ./subscript 1 2 5 2
+* Parallel Hash Join - cd test && make && ./hashjoin 3000 3000 4
 
 
 ### C++ Programming Style Guidelines
